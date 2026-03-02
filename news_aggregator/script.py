@@ -102,7 +102,7 @@ if __name__ == '__main__':
     range_dt = ["2026-02-21", "2026-02-21"]
     file_name = f"{search_keyword}_newsoutput.csv"
     fetch_news = NewsFetcher(search_keyword, file_name)
-    test = fetch_news.get_everything(range_dt, sort_opt)
+    test = fetch_news.get_everything(range_dt)
 
     # src = "ABC News"
     # cntry = "us"
