@@ -1,5 +1,5 @@
 """
-    Fetch news from NewsAPI (https://newsapi.org/) which is a simple HTTP REST API for searching and fetching articles from the web
+    Fetch news from NewsAPI (https://newsapi.org/) - a simple HTTP REST API for news articles from the web
     Date Created: March 1, 2026
 """
 
@@ -45,7 +45,7 @@ class NewsFetcher:
         all_articles = []
 
         try:
-            for pg_i in range(1, 10):
+            for pg_i in range(1, 6):
                 method = getattr(self.newsapi_client, method_name)
                 response = method(**kwargs, page=pg_i)
 
