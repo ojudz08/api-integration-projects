@@ -3,12 +3,24 @@
     Date Created: March 1, 2026
 """
 
-import os
+import os, logging
 import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
 from newsapi import NewsApiClient
 from datetime import datetime
+
+# Save logs to file and prints them
+logging.basicConfig(
+    level = logging.INFO,
+    format = "%(asctime)s - %(levelname)s -- %(message)s",
+    datefmt = "%Y-%m-%d %I:%M %p",
+    handlers = [
+        logging.FileHandler(Path("./logs") / "news_fetcher_logs.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -18,14 +30,14 @@ class NewsFetcher:
     def __init__(self, file_name: str):
         self.api_key = os.getenv("NEWSAPI_API_KEY")
         if not self.api_key:
+            logger.error(f"API Key missing in .env file.")
             raise ValueError("API Key not found. Please set NEWSAPI_API_KEY in your .env file.")
 
         self.newsapi_client = NewsApiClient(api_key=self.api_key)
         self.file_name = file_name
         self.data_dir = Path("./data")
         self.data_dir.mkdir(exist_ok=True)
-        self.newsapi_url = 'https://newsapi.org/v2'                 # check if this is needed
-        
+
     
     def _fetch_paginated_articles(self, method_name: str, **kwargs) -> list:
         """Handle pagination up to 5 pages due to API limit for developer plan."""
@@ -41,10 +53,10 @@ class NewsFetcher:
                 if not articles: break
 
                 all_articles.extend(articles)
-                # add a logging details here when news is fetched  
+                logger.info(f"Fetched page {pg_i} for {method_name} method...")
 
         except Exception as e:
-            print(f"Failed to fetch news: {e}")     # update to add a logging here for errors
+            logger.error(f"Failed to fetch news for {method_name} method: {e}")
         
         return all_articles
 
@@ -79,7 +91,8 @@ class NewsFetcher:
     def save_as_csv(self, articles: list) -> str:
         """Transform the dict data into dataframe and save as csv"""
         if not articles:
-            return "No articles found for the given criteria."
+            logger.warning("No articles found. CSV will not be created.")
+            return "No data found."
 
         processed_news_data = []
         for art in articles:
@@ -96,6 +109,7 @@ class NewsFetcher:
         data_df = pd.DataFrame(processed_news_data)
         file_path = self.data_dir / self.file_name
         data_df.to_csv(file_path, index=False)
+        logger.info(f"File saved successfully: {file_path}")
         
         return f"Successfully saved {len(data_df)} articles to {file_path}"
 
@@ -130,4 +144,5 @@ if __name__ == '__main__':
     else:
         result = fetcher.get_top_headlines(**params)
 
-    print(f"\n[Status]: {result}")    
+    print(f"\n[Status]: {result}")
+    print("Please check the 'news_fetcher.log' for execution details.")  
