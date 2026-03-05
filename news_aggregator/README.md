@@ -24,7 +24,7 @@ A object-oriented Python script designed to fetch, process and save news article
 ### 📋 Requirements
 
 - **Virtual Environment:** This project was created and tested in an isolated miniconda venv within VsCode. To setup your venv, go to this link [Set Up That Virtual Environment](https://medium.com/@ojelle.rogero/wait-how-did-i-set-up-that-virtual-environment-again-b8ff359d6477)
-- **Python 3.13.9**
+- **Python 3.8+**
 - **API Key:** Create your API key from [NewsAPI.org](https://newsapi.org/)
 
 
