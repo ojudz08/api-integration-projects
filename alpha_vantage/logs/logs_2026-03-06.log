@@ -1,0 +1,70 @@
+2026-03-06 03:36 PM - ERROR -- API Key missing in .env file.
+2026-03-06 03:36 PM - ERROR -- API Key missing in .env file.
+2026-03-06 03:47 PM - ERROR -- TimeSeries.get_daily() got an unexpected keyword argument 'datatype'
+2026-03-06 03:48 PM - ERROR -- TimeSeries.get_daily() got an unexpected keyword argument 'datatype'
+2026-03-06 03:49 PM - INFO -- Fetching daily time series for: WDC (Size: compact)
+2026-03-06 03:49 PM - ERROR -- Unexpected error retrieving data for WDC: TimeSeries.get_daily() got an unexpected keyword argument 'datatype'
+Traceback (most recent call last):
+  File "c:\Users\ojell\Desktop\Oj\_Automation\api_integration-projects\alpha_vantage\alpha_vantage_ts.py", line 60, in ts_daily
+    data_df, meta_data = self.timeseries.get_daily(
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        symbol=symbol,
+        ^^^^^^^^^^^^^^
+        outputsize=outputsize,
+        ^^^^^^^^^^^^^^^^^^^^^^
+        datatype=datatype
+        ^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 218, in _format_wrapper
+    call_response, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 122, in _call_wrapper
+    function_name, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TimeSeries.get_daily() got an unexpected keyword argument 'datatype'
+2026-03-06 03:50 PM - INFO -- Fetching daily time series for: WDC (Size: compact)
+2026-03-06 03:51 PM - INFO -- Fetching daily time series for WDC (Size: compact) successful!
+2026-03-06 05:03 PM - ERROR -- Invalid parameters for WDC: Thank you for using Alpha Vantage! This is a premium endpoint. You may subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly unlock all premium endpoints
+2026-03-06 05:11 PM - INFO -- Initiating get_daily call for WDC...
+2026-03-06 05:11 PM - INFO -- Successfully retrieved data for WDC.
+2026-03-06 05:36 PM - INFO -- Initiating get_weekly call for ticker WDC...
+2026-03-06 05:36 PM - ERROR -- Unexpected error for WDC: TimeSeries.get_weekly() got an unexpected keyword argument 'outputsize'
+Traceback (most recent call last):
+  File "c:\Users\ojell\Desktop\Oj\_Automation\api_integration-projects\alpha_vantage\alpha_vantage_ts.py", line 53, in _execute_api_call
+    data_df, meta_data = api_method(symbol=symbol, **kwargs)
+                         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 218, in _format_wrapper
+    call_response, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 122, in _call_wrapper
+    function_name, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TimeSeries.get_weekly() got an unexpected keyword argument 'outputsize'
+2026-03-06 05:36 PM - INFO -- Initiating get_weekly call for ticker WDC...
+2026-03-06 05:36 PM - ERROR -- Unexpected error for WDC: TimeSeries.get_weekly() got an unexpected keyword argument 'outputsize'
+Traceback (most recent call last):
+  File "c:\Users\ojell\Desktop\Oj\_Automation\api_integration-projects\alpha_vantage\alpha_vantage_ts.py", line 53, in _execute_api_call
+    data_df, meta_data = api_method(symbol=symbol, **kwargs)
+                         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 218, in _format_wrapper
+    call_response, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ojell\miniconda3\envs\apis\Lib\site-packages\alpha_vantage\alphavantage.py", line 122, in _call_wrapper
+    function_name, data_key, meta_data_key = func(
+                                             ~~~~^
+        self, *args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: TimeSeries.get_weekly() got an unexpected keyword argument 'outputsize'
+2026-03-06 05:39 PM - INFO -- Initiating get_weekly call for ticker WDC...
+2026-03-06 05:39 PM - INFO -- Successfully retrieved data for WDC.
