@@ -4,9 +4,11 @@
 """
 
 import os
+import pandas as pd
+from pathlib import Path
 from dotenv import load_dotenv
 from alpha_vantage.timeseries import TimeSeries
-from report_logs import get_logs
+from report_logs import *
 from user_config import get_user_config
 
 # Initialize logger
@@ -61,6 +63,13 @@ if __name__ == '__main__':
     av_client = AlphaVantageTimeSeries(user_config)
     data, metadata = av_client.run_config_task()
 
-    if data is not None:
-        print(f"\nFetched {len(data)} rows.")
-        print(data.head())
+    file_input = input("Enter file name to save as csv: ").strip()
+    file_path = Path(file_input)
+    if file_path.suffix.lower() != '.csv':
+        file_path = file_path.with_suffix('.csv')
+
+    file_name = str(file_path)
+
+    output_dir = Path(get_path()) / "data" / "output" / f"{file_name}"
+    data_df = pd.DataFrame(data)
+    data_df.to_csv(output_dir)
