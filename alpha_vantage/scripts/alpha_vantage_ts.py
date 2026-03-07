@@ -3,26 +3,14 @@
     Date Created: March 5, 2026
 """
 
-import os, logging
-from pathlib import Path
+import os
 from dotenv import load_dotenv
 from alpha_vantage.timeseries import TimeSeries
-from datetime import date
+from report_logs import get_logs
+from user_config import get_user_config
 
-# Save logs to file and prints them
-log_dir = Path("./logs")
-log_dir.mkdir(exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s -- %(message)s",
-    datefmt="%Y-%m-%d %I:%M %p",
-    handlers=[
-        logging.FileHandler(log_dir / f"logs_{date.today()}.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Initialize logger from get_logs function
+logger = get_logs()
 
 # Load environment variables
 load_dotenv()
@@ -36,6 +24,7 @@ class AlphaVantageTimeSeries():
             logger.error(f"API Key missing in .env file.")
             raise ValueError("API Key not found. Please set your Alpha Vantage API KEY in your .env file.")
         self.timeseries = TimeSeries(key=self.api_key, output_format='pandas')
+        test = self.timeseries.get
     
 
     def _execute_api_call(self, method_name: str, symbol: str, **kwargs):
@@ -63,20 +52,6 @@ class AlphaVantageTimeSeries():
             logger.error(f"Unexpected error for {symbol}: {e}", exc_info=True)
         
         return None, None
-    
-
-    def get_method(self, **kwargs):
-        method_name = kwargs.pop('get_method', None)
-
-        if method_name == 'intraday': return self.ts_intraday(kwargs)
-        elif method_name == 'daily': return self.ts_daily(kwargs)
-        elif method_name == 'daily adjusted': return self.ts_daily_adj(kwargs)
-        elif method_name == 'weekly': return self.ts_weekly(kwargs)
-        elif method_name == 'weekly adjusted': return self.ts_weekly_adj(kwargs)
-        elif method_name == 'monthly': return self.ts_monthly(kwargs)
-        elif method_name == 'monthly adjusted': return self.ts_monthly_adj(kwargs)
-        else:
-            logger.error(f"No method {method_name}. Check your input.")
 
 
     def ts_intraday(self, **kwargs):
@@ -159,24 +134,17 @@ class AlphaVantageTimeSeries():
         return self._execute_api_call('get_monthly_adjusted', symbol, **kwargs)
 
 
-def get_user_config():
-    """Dynamic function to capture runtime variables."""
-    print("\n--- Stock Data Fetcher ---")
-    symbol = input("Enter Ticker Symbol (e.g., TSLA): ").upper()
-    get_method = input("Enter what time series data - intraday, daily, daily adjusted, weekly, weekly adjusted, monthly or monthly adjusted: ")
-    
-
-    return {"symbol": symbol, "method": get_method}
-
 
 if __name__ == '__main__':
     timeseries = AlphaVantageTimeSeries()
 
-    #config = get_user_config()
-    #data, metadata = timeseries.ts_daily(**config)
+    config = get_user_config()
 
-    data, metadata = get_user_config()
+    print(config)
+    #data, metadata = timeseries.ts_weekly(**config)
 
-    if data is not None:
-        print(f"\nSuccessfully fetched {len(data)} rows of data.")
-        print(data)
+    # data, metadata = get_user_config()
+
+    # if data is not None:
+    #     print(f"\nSuccessfully fetched {len(data)} rows of data.")
+    #     print(data)
