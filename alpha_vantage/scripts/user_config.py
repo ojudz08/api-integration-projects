@@ -1,72 +1,57 @@
 from report_logs import get_logs
 
-# Initialize logger from get_logs function
 logger = get_logs()
 
+# Mapping methods to their specific requirements
+VALID_METHODS = {
+    "intraday": ["interval", "adjusted", "extended_hours", "outputsize"],
+    "daily": ["outputsize"],
+    "daily adjusted": ["outputsize"],
+    "weekly": [],
+    "weekly adjusted": [],
+    "monthly": [],
+    "monthly adjusted": []
+}
 
-def config_method_name(get_method):
-    words = get_method.lower().split()
-    method_name = "get_" + "_".join(words)
-    
-    method_name_list = ["get_intraday", "get_daily", "get_daily_adjusted", "get_weekly", "get_weekly_adjusted", "get_monthly", "get_monthly_adjusted"]
 
-    if method_name not in method_name_list:
-        err_msg = "Method name incorrect. Check your input."
-        logger.error(f"{err_msg}")
+def config_method_name(raw_method):
+    """Validates the method name."""
+    clean_method_name = raw_method.lower().strip()
+    if clean_method_name not in VALID_METHODS:
+        err_msg = f"Method '{clean_method_name}' is incorrect. Check your input."
+        logger.error(err_msg)
         raise ValueError(err_msg)
-
-    return method_name
-
-
-
-def config_intraday(get_method):
-    method_name = config_method_name(get_method)
-    symbol = input("Enter ticker symbol (e.g., TSLA): ").upper()
-    interval = input("Enter time interval between 2 consecutive data points (e.g., 1min, 5min, 15min, 30min, 60min): ")
-    adjusted = input("Enter 'True' (Data adjustment for historical split & dividend events) or 'False' (As-traded intraday values): ")
-    extended_hours = input("Enter 'True' (both regular and extended trading hours from 4:00am to 8:00pm) or 'False' (regular trading hours from 9:30am to 4:00pm US ET): ")
-    outputsize = input("Enter 'compact' (latest 100 data points) or 'full' (full-length 20+ yrs historical data): ")
     
-    config_args = { "method_name": method_name,
-                    "symbol": symbol, 
-                    "interval": interval, 
-                    "adjusted": adjusted,
-                    "extended_hours": extended_hours,
-                    "outputsize": outputsize    }
-    return config_args
-
-
-def config_daily(get_method):
-    method_name = config_method_name(get_method)
-    symbol = input("Enter ticker symbol (e.g., TSLA): ").upper()
-    outputsize = input("Enter 'compact' (latest 100 data points) or 'full' (full-length 20+ yrs historical data): ")
-    
-    config_args = { "method_name": method_name,
-                    "symbol": symbol, 
-                    "outputsize": outputsize    }
-    return config_args
-    
-
-def config_weekly_monthly(get_method):
-    method_name = config_method_name(get_method)
-    symbol = input("Enter ticker symbol (e.g., TSLA): ").upper()
-
-    config_args = { "method_name": method_name,
-                    "symbol": symbol    }
-    return config_args
+    # Convert method with "get_" i.e. "get_daily_adjusted"
+    return f"get_{'_'.join(clean_method_name.split())}"
 
 
 def get_user_config():
-    """Dynamic function to capture runtime variables."""
+    """Single dynamic function to capture all necessary variables."""
     print("\n--- Stock Data Fetcher ---")
-    # symbol = input("Enter Ticker Symbol (e.g., TSLA): ").upper()
-    get_method = input("Enter what time series data - intraday, daily, daily adjusted, weekly, weekly adjusted, monthly or monthly adjusted: ")
 
-    if get_method == 'intraday':
-        config_kwargs = config_intraday()
-    elif get_method == 'daily' or get_method == 'daily adjusted':
-        config_kwargs = config_daily()
-    else:
-        config_kwargs = config_weekly_monthly()     
+    raw_method = input(f"Enter time series ({', '.join(VALID_METHODS.keys())}): ").lower().strip()
+    method_name = config_method_name(raw_method)
+    
+    # Every method requires a symbol
+    config_args = {
+        "method_name": method_name,
+        "symbol": input("Enter ticker symbol (e.g., TSLA): ").upper().strip()
+    }
 
-    return config_kwargs
+    # Determine what are the needed arguments based on the method
+    required_args = VALID_METHODS.get(raw_method, [])
+
+    if "interval" in required_args:
+        config_args["interval"] = input("Enter interval (1min, 5min, 15min, 30min, 60min): ")
+    
+    if "adjusted" in required_args:
+        config_args["adjusted"] = input("Adjusted for dividends? (True/False): ")
+        
+    if "extended_hours" in required_args:
+        config_args["extended_hours"] = input("Include extended hours? (True/False): ")
+
+    if "outputsize" in required_args:
+        config_args["outputsize"] = input("Enter outputsize ('compact' or 'full'): ")
+
+    return config_args
