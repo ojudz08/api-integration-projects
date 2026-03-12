@@ -8,6 +8,7 @@ import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
 from alpha_vantage.timeseries import TimeSeries
+from alpha_vantage.cryptocurrencies import CryptoCurrencies
 from report_logs import *
 from user_config import get_user_config
 
@@ -26,9 +27,10 @@ class AlphaVantageTimeSeries():
             logger.error("API Key missing in .env file.")
             raise ValueError("API Key not found.")
         self.timeseries = TimeSeries(key=self.api_key, output_format='pandas')
+        self.cryptocurrency = CryptoCurrencies(key=self.api_key, output_format='pandas') 
 
-    def run_config_task(self):
-        """ Parses user_config and executes the corresponding method automatically. """
+    def run_time_series(self):
+        """ Parses user_config and executes the corresponding time series method automatically. """
         config = self.user_config.copy()
         method_name = config.pop('method_name', None)
         symbol = config.pop('symbol', None)
@@ -56,12 +58,19 @@ class AlphaVantageTimeSeries():
 
         return None, None
 
+    def run_crypto_currencies(self):
+        """Parse the user config for crypto currency"""
+        test = self.cryptocurrency.get_crypto_intraday()
+
+        return test
+
+
 
 if __name__ == '__main__':
     user_config = get_user_config()
 
     av_client = AlphaVantageTimeSeries(user_config)
-    data, metadata = av_client.run_config_task()
+    data, metadata = av_client.run_time_series()
 
     file_input = input("Enter file name to save as csv: ").strip()
     file_path = Path(file_input)
